@@ -1,0 +1,46 @@
+TEST FALLIMENTARI
+
+    
+def Test2(): #! WRONG
+  y, sr = librosa.load(audio_files[0])
+  stft = librosa.stft(y)
+  onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
+  first = True
+  notes = []
+  
+  print(stft.shape)
+  
+  for onset in onset_frames:
+    stft_at_onset = stft[:, onset]
+    note = librosa.hz_to_note(440 * math.pow(2, (onset - 49)/12)) # stft_at_onset.argmax()* 43.06640625
+    if not first:
+      note_duration = librosa.frames_to_time(onset, sr=sr)
+      notes.append((note, onset, note_duration  - prev_note_duration))
+    else:
+      prev_note_duration = librosa.frames_to_time(onset, sr=sr)
+      first = False
+  print("Note \t Onset frame \t Note Duration")
+  for entry in notes:
+    print(f"{entry[0]} \t\t {entry[1]} \t\t {entry[2]}")
+
+/////////
+
+def Test3(): #! WRONG
+  y, sr = librosa.load(audio_files[1])
+  chroma = librosa.feature.chroma_stft(y=y, sr=sr)
+  onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
+  first = True 
+  notes = []
+
+  for onset in onset_frames:
+    chroma_at_onset = chroma[:, onset]
+    note = librosa.hz_to_note(440 * math.pow(2, (chroma_at_onset.argmax() - 49)/12)) # stft_at_onset.argmax()* 43.06640625
+    if not first:
+      note_duration = librosa.frames_to_time(onset, sr=sr)
+      notes.append((note, onset, note_duration  - prev_note_duration))
+    else:
+      prev_note_duration = librosa.frames_to_time(onset, sr=sr)
+      first = False
+  print("Note \t Onset frame \t Note Duration")
+  for entry in notes:
+    print(f"{entry[0]} \t\t {entry[1]} \t\t {entry[2]}")
