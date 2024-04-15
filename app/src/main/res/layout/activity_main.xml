@@ -4,14 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:contentDescription="@android:string/yes"
     tools:context=".MainActivity">
 
     <Button
         android:id="@+id/button_sheet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:text="Load Sheet"
+        android:layout_marginEnd="24dp"
+        android:backgroundTint="#3F51B5"
+        android:onClick="onLoadSheet"
+        android:text="@string/load_sheet"
+        android:textColor="@color/white"
         android:textColorHighlight="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_recording"
@@ -22,22 +26,32 @@
         android:id="@+id/button_recording"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Load Recording"
+        android:backgroundTint="#3F51B5"
+        android:onClick="onLoadRecording"
+        android:text="@string/load_recording"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.57"
+        app:layout_constraintHorizontal_bias="0.627"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.02" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="58dp"
-        android:layout_height="66dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:id="@+id/button_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/play"
+        android:onClick="onPlay"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.412"
+        app:layout_constraintStart_toEndOf="@+id/button_recording"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/play" />
+        app:layout_constraintVertical_bias="0.02"
+        app:srcCompat="@drawable/play"
+        app:tint="#3F51B5" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
