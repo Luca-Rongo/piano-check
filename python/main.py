@@ -15,8 +15,8 @@ path = "xml/"
 #!===GET AUDIO FILE===
 
 
-def getAudioFile():
-    audio_file = glob("python/audio_files/*.wav")
+def getAudioFile(name):
+    audio_file = glob(name)
     return audio_file
 
 
@@ -65,11 +65,15 @@ def loadSheet(xml):
     score = sorted(score, key=lambda x: (x[0], x[2]))
     return score
 
+#!===LOAD AUDIO FILE===
+
+def loadAudio(audio_file):
+  return 0
 
 #!===CHECK AUDIO FILE===
 
 
-def checkAudioWithSheet():
+def checkAudioWithSheet(audio,sheet):
     return True
 
 #!---
@@ -85,29 +89,40 @@ def createJsonFile(xml_list, name):
       }
       result.append(note)
   formatted_json = json.dumps(result, indent=4)
+  return formatted_json
   #print(formatted_json)
-  if not os.path.exists("json"):
-    os.mkdir("json")
-  with open(f"json/{name.split('.')[0]}.json", "w") as outfile:
-    outfile.write(formatted_json)
+  # if not os.path.exists("json"):
+  #   os.mkdir("json")
+  # with open(f"json/{name.split('.')[0]}.json", "w") as outfile:
+  #   outfile.write(formatted_json)
 
 #!===MAIN===
 
 
-def main(name):
-    folder = "xml/"
-    #audio = getAudioFile()
-    xml_list = loadSheet(folder + name)
+def main(scoreName, audioName):
+    scoreFolder = "xml/"
+    audioFolder = "audio/"
+    audio_file = getAudioFile(audioFolder + audioName)
+    print(audio_file)
+    
+    xml_list = loadSheet(scoreFolder + scoreName)
     #print(xml_list)
-    if xml_list is not None:
-        print("Sheet loaded")
-        createJsonFile(xml_list, name)
-        # checkAudioWithSheet()
+    if xml_list is not None and audio_file:
+        print("Loading...")
+        audio = loadAudio(audio_file[0])
+        sheet = createJsonFile(xml_list, scoreName)
+        checkAudioWithSheet(audio, sheet)
     else:
         print("No audio or sheet file found")
 
 
 if not os.path.exists("xml"):
     os.mkdir("xml")
-
-main("Schubert.mxl")
+if not os.path.exists("audio"):
+    os.mkdir("audio")
+    
+# audioName = "notec.wav"
+# audioFolder = "audio/"
+# audio = getAudioFile(audioFolder + audioName)
+# print(audio)
+main("C.mxl", "notec.wav")
