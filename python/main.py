@@ -1,41 +1,113 @@
-import librosa
-import math
-import numpy as np
+# import librosa
+import json
+import os
+#import numpy as np
+#import pandas as pd
+#import IPython.display as ipd
 from glob import glob
+import music21 as m21
+from music21 import converter
 
-audio_files = glob('python/audio_files/*.wav')
-print(audio_files)
-pitch_mapping = {
-          "C": 0, "C#": 1, "Db": 1, "D": 2, "D#": 3, "Eb": 3, "E": 4,
-          "F": 5, "F#": 6, "Gb": 6, "G": 7, "G#": 8, "Ab": 8, "A": 9,
-          "A#": 10, "Bb": 10, "B": 11
-      }
-pitch_mapping_it = {
-          "Do": 0, "Do#": 1, "Reb": 1, "Re": 2, "Re#": 3, "Mib": 3, "Mi": 4,
-          "Fa": 5, "Fa#": 6, "Solb": 6, "Sol": 7, "Sol#": 8, "Lab": 8, "La": 9,
-          "La#": 10, "Sib": 10, "Si": 11
-      }
+# configure.run()
+
+path = "xml/"
+
+#!===GET AUDIO FILE===
 
 
-def Test1(): #! CORRECT BUT ONLY NOTE, NO SCALE
-  y, sr = librosa.load(audio_files[2])
-  chroma = librosa.feature.chroma_stft(y=y, sr=sr)
-  onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
-  first = True 
-  notes = []
-  for onset in onset_frames:
-    print(onset)
-    chroma_at_onset = chroma[:, onset]
-    print(chroma_at_onset)
-    note_pitch = chroma_at_onset.argmax() #? .argmax() Returns the indices of the maximum values along an axis.
-    if not first:
-      note_duration = librosa.frames_to_time(onset, sr=sr)
-      notes.append((note_pitch, onset, note_duration  - prev_note_duration))
+def getAudioFile():
+    audio_file = glob("python/audio_files/*.wav")
+    return audio_file
+
+
+#!===GET SHEET FILE===
+
+
+def getSheetFile():
+    sheet_file = glob("python/sheet_files/*.musicxml")
+    return sheet_file
+
+
+#!===CONVERT SHEET FILE===
+
+
+def loadSheet(xml):
+    # b.show('musicXML')
+    if isinstance(xml, str):
+        xml_data = converter.parse(xml)
+    elif isinstance(xml, m21.stream.Score):
+        xml_data = xml
     else:
-      prev_note_duration = librosa.frames_to_time(onset, sr=sr)
-      first = False
-  print("Note \t Note Name It \t Onset frame \t Note Duration \t\t Note pitch")
-  for entry in notes:
-    print(f"{next((key for key in pitch_mapping.keys() if pitch_mapping[key] == entry[0]), None )} \t {next((key for key in pitch_mapping_it.keys() if pitch_mapping_it[key] == entry[0]), None )} \t\t {entry[1]} \t\t {entry[2]} \t {entry[0]}")
-    
-Test1()
+        raise RuntimeError(
+            "midi must be a path to a midi file or a music21.stream.Score"
+        )
+
+    score = []
+
+    for part in xml_data.parts:
+        instrument = part.getInstrument().instrumentName
+
+        for note in part.flatten().notes:
+            if note.isChord:
+                start = note.offset
+                duration = note.quarterLength
+
+                for chord_note in note.pitches:
+                    pitch = chord_note.ps
+                    volume = note.volume.realized
+                    score.append([start, duration, pitch, volume, instrument])
+            else:
+                start = note.offset
+                duration = note.quarterLength
+                pitch = note.pitch.ps
+                volume = note.volume.realized
+                score.append([start, duration, pitch, volume, instrument])
+    score = sorted(score, key=lambda x: (x[0], x[2]))
+    return score
+
+
+#!===CHECK AUDIO FILE===
+
+
+def checkAudioWithSheet():
+    return True
+
+#!---
+def createJsonFile(xml_list, name):
+  result = []
+  for xml in xml_list:
+      note = {
+          "Start": xml[0],
+          "End": xml[1],
+          "Pitch": xml[2],
+          "Velocity": xml[3],
+          "Instrument": xml[4],
+      }
+      result.append(note)
+  formatted_json = json.dumps(result, indent=4)
+  #print(formatted_json)
+  if not os.path.exists("json"):
+    os.mkdir("json")
+  with open(f"json/{name.split('.')[0]}.json", "w") as outfile:
+    outfile.write(formatted_json)
+
+#!===MAIN===
+
+
+def main(name):
+    folder = "xml/"
+    #audio = getAudioFile()
+    xml_list = loadSheet(folder + name)
+    #print(xml_list)
+    if xml_list is not None:
+        print("Sheet loaded")
+        createJsonFile(xml_list, name)
+        # checkAudioWithSheet()
+    else:
+        print("No audio or sheet file found")
+
+
+if not os.path.exists("xml"):
+    os.mkdir("xml")
+
+main("Schubert.mxl")

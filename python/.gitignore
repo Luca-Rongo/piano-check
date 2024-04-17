@@ -160,3 +160,6 @@ cython_debug/
 #.idea/
 
 audio_files/
+test/
+json/
+xml/
