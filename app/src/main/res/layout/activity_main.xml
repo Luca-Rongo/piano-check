@@ -11,7 +11,7 @@
         android:id="@+id/button_sheet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="28dp"
         android:backgroundTint="#3F51B5"
         android:onClick="onLoadSheet"
         android:text="@string/load_sheet"
@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_recording"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.02" />
 
     <Button
         android:id="@+id/button_recording"

@@ -39,8 +39,8 @@ def CQT_fast(x, fs, bins, fmin, fmax, M):
     K = int(bins * np.ceil(np.log2(fmax / fmin)))
     Q = 1 / (2 ** (1 / bins) - 1)
     nfft = np.int32(nearestPow2(np.ceil(Q * fs / fmin)))
-    tempKernel = np.zeros(nfft, dtype=np.complex)
-    specKernel = np.zeros(nfft, dtype=np.complex)
+    tempKernel = np.zeros(nfft, dtype=complex)
+    specKernel = np.zeros(nfft, dtype=complex)
     sparKernel = []
 
     # create sparse Kernel

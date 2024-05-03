@@ -9,7 +9,8 @@ import hmm as hmm
 
 def get_templates(chords):
     """read from JSON file to get chord templates"""
-    with open("data/chord_templates.json", "r") as fp:
+    path = os.getcwd()
+    with open( path + "/chords/data/chord_templates.json", "r") as fp:
         templates_json = json.load(fp)
     templates = []
 
@@ -182,33 +183,18 @@ def find_chords(
     return timestamp, final_chords
 
 
-def main(argv):
+def main():
     input_file = ""
     method = ""
     plot = False
     has_method = False
-    try:
-        opts, args = getopt.getopt(argv, "hi:m:p:", ["ifile=", "method=", "plot="])
-    except getopt.GetoptError:
-        print("main.py -i <inputfile> -m <method>")
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == "-h":
-            print("main.py -i <input_file> -m <method> -p <plot>")
-            sys.exit()
-        elif opt in ("-i", "--ifile"):
-            input_file = arg
-        elif opt in ("-m", "--method"):
-            method = arg
-            has_method = True
-        elif opt in ("-p", "--plot"):
-            plot = arg
-    if not has_method:
-        method = "match_template"
-
+    
+    input_file = "notec.wav"
+    method = "hmm"
     print("Input file is ", input_file)
     print("Method is ", method)
-    directory = os.getcwd() + "/data/test_chords/"
+    print(input_file)
+    directory = os.getcwd() + "/audio/"
     # read the input file
     (fs, s) = read(directory + input_file)
     # convert to mono if file is stereo
@@ -242,4 +228,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
