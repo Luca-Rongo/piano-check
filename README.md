@@ -2,7 +2,10 @@
 An Android application that, given as input a music score and a recording of piano performance, indicates to the user the errors made (incorrect notes, timing, and durations)
 
 ## Technologies
-- Kotlin with Android 11
+- React with the following libraries: 
+  - [Chakra UI](https://v2.chakra-ui.com/)
+  - [Vexflow](https://github.com/0xfe/vexflow)
+- [Ionic](https://ionicframework.com/)
 - Python with the following libraries:
   - [Chord-Recognition](https://github.com/orchidas/Chord-Recognition)
   - [Music-notes-detection](https://github.com/Amagnum/Music-notes-detection)
@@ -10,7 +13,7 @@ An Android application that, given as input a music score and a recording of pia
 
 ## Installation
 
-To install the python libraries: 
+<!-- To install the python libraries: 
 ```
 python setup.py install --user
-``` 
+```  -->
