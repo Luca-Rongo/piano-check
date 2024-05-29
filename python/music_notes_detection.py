@@ -20,26 +20,27 @@ def note_detect(audio_file):
 
 	for i in range(file_length) : 
 		wdata=audio_file.readframes(1)
-		data=struct.unpack("<h",wdata)
+  	#params = audio_file.getparams()
+		data=struct.unpack("<i",wdata)
 		sound[i] = int(data[0])
 	
-	plt.plot(sound)
-	plt.show()
+	#plt.plot(sound)
+	#plt.show()
 	
 	sound=np.divide(sound,float(2**15)) #scaling it to 0 - 1
 	counter = audio_file.getnchannels() #number of channels mono/sterio
 	#-------------------------------------------
 	
-	plt.plot(sound)
-	plt.show()
+	#plt.plot(sound)
+	#plt.show()
 
 	#fourier transformation from numpy module
 	fourier = np.fft.fft(sound)
 	fourier = np.absolute(fourier)
 	imax=np.argmax(fourier[0:int(file_length/2)]) #index of max element
 		
-	plt.plot(fourier)
-	plt.show()
+	#plt.plot(fourier)
+	#plt.show()
 
 	#peak detection
 	i_begin = -1
@@ -81,7 +82,7 @@ def note_detect(audio_file):
 if __name__ == "__main__":
 
 	path = os.getcwd()
-	file_name = path + "/d2.wav"
+	file_name = path + "/audio/cScale.wav"
 	audio_file = wave.open(file_name)
 	Detected_Note = note_detect(audio_file)
 	print("\n\tDetected Note = " + str(Detected_Note))

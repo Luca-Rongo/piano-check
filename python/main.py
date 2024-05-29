@@ -8,7 +8,8 @@ import os
 from glob import glob
 import music21 as m21
 from music21 import converter
-
+from pydub import AudioSegment
+from muslib import Test1
 # configure.run()
 
 path = "xml/"
@@ -18,6 +19,7 @@ path = "xml/"
 
 def getAudioFile(name):
     audio_file = glob(name)
+    print(name)
     return audio_file
 
 
@@ -71,7 +73,8 @@ def loadSheet(xml):
 
 
 def loadAudio(audio_file):
-    return 0
+    notes = Test1(audio_file)
+    return notes
 
 
 #!===CHECK AUDIO FILE===
@@ -90,12 +93,12 @@ def createJsonFile(xml_list, name):
             "End": xml[1],
             "Pitch": xml[2],
             "Velocity": xml[3],
-            "Instrument":xml[4],
-            "IsChord":  xml[5] if len(xml) == 6 else False,
+            "Instrument": xml[4],
+            "IsChord": xml[5] if len(xml) == 6 else False,
         }
         result.append(note)
     formatted_json = json.dumps(result, indent=4)
-    #print(formatted_json)
+    # print(formatted_json)
     if not os.path.exists("json"):
         os.mkdir("json")
     with open(f"json/{name.split('.')[0]}.json", "w") as outfile:
@@ -106,19 +109,34 @@ def createJsonFile(xml_list, name):
 #!===MAIN===
 
 
-def main(scoreName, audioName):
-    scoreFolder = "xml/"
-    audioFolder = "audio/"
-    audio_file = getAudioFile(audioFolder + audioName)
-    print(audio_file)
+def main():
+    # ? SELECT AUDIO
+    audio_files = glob("audio/*")
+    print(audio_files)
+    audio = 0
+    audio = input(
+        "Select an audio file to test and press Enter... (Default = 0):   "
+    )  #! Select an audio file to test and press Enter...
 
-    xml_list = loadSheet(scoreFolder + scoreName)
+    # ? SELECT SHEET
+    xml_files = glob("xml/*")
+    print(xml_files)
+    xml = 0
+    xml = input(
+        "Select a sheet file to test and press Enter... (Default = 0):   "
+    )  #! Select a sheet file to test and press Enter...
+
+    audio_file = getAudioFile(audio_files[int(audio)])
+    # print(audio_file)
+    xml_list = loadSheet(xml_files[int(xml)])
     # print(xml_list)
     if xml_list is not None and audio_file:
         print("Loading...")
         audio = loadAudio(audio_file[0])
-        sheet = createJsonFile(xml_list, scoreName)
-        #print(sheet)
+        print(audio)
+        print ( xml_files[int(audio)])
+        sheet = createJsonFile(xml_list, xml_files[int(audio)])
+        print("JSON file created successfully!")
         checkAudioWithSheet(audio, sheet)
     else:
         print("No audio or sheet file found")
@@ -133,4 +151,4 @@ if not os.path.exists("audio"):
 # audioFolder = "audio/"
 # audio = getAudioFile(audioFolder + audioName)
 # print(audio)
-main("C.mxl", "notec.wav")
+main()
