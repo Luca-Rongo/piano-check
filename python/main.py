@@ -81,7 +81,13 @@ def loadAudio(audio_file):
 
 
 def checkAudioWithSheet(audio, sheet):
-    return True
+    j_sheet = json.loads(sheet)
+    print(j_sheet)
+    for note in audio:
+        if note[0] == int(j_sheet[0]["Pitch"]):
+            print("Note is correct")
+        else:
+            print("Note is incorrect")
 
 
 #!---
@@ -99,9 +105,10 @@ def createJsonFile(xml_list, name):
         result.append(note)
     formatted_json = json.dumps(result, indent=4)
     # print(formatted_json)
+    real_name = name.split("\\")[1].split(".")[0]
     if not os.path.exists("json"):
         os.mkdir("json")
-    with open(f"json/{name.split('.')[0]}.json", "w") as outfile:
+    with open(f"json/{real_name}.json", "w") as outfile:
         outfile.write(formatted_json)
     return formatted_json
 
@@ -111,10 +118,10 @@ def createJsonFile(xml_list, name):
 
 def main():
     # ? SELECT AUDIO
-    audio_files = glob("audio/*")
+    audio_files = glob("audio/*.wav")
     print(audio_files)
-    audio = 0
-    audio = input(
+    audio_selected = 0
+    audio_selected = input(
         "Select an audio file to test and press Enter... (Default = 0):   "
     )  #! Select an audio file to test and press Enter...
 
@@ -126,7 +133,7 @@ def main():
         "Select a sheet file to test and press Enter... (Default = 0):   "
     )  #! Select a sheet file to test and press Enter...
 
-    audio_file = getAudioFile(audio_files[int(audio)])
+    audio_file = getAudioFile(audio_files[int(audio_selected)])
     # print(audio_file)
     xml_list = loadSheet(xml_files[int(xml)])
     # print(xml_list)
@@ -134,8 +141,8 @@ def main():
         print("Loading...")
         audio = loadAudio(audio_file[0])
         print(audio)
-        print ( xml_files[int(audio)])
-        sheet = createJsonFile(xml_list, xml_files[int(audio)])
+        print(xml_files[int(xml)])  #  xml_files[int(audio)]
+        sheet = createJsonFile(xml_list, xml_files[int(xml)])
         print("JSON file created successfully!")
         checkAudioWithSheet(audio, sheet)
     else:
