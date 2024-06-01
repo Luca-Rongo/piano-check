@@ -9,7 +9,7 @@ from glob import glob
 import music21 as m21
 from music21 import converter
 from pydub import AudioSegment
-from muslib import Test1
+from muslib import TestGPT
 # configure.run()
 
 path = "xml/"
@@ -73,7 +73,7 @@ def loadSheet(xml):
 
 
 def loadAudio(audio_file):
-    notes = Test1(audio_file)
+    notes = TestGPT(audio_file)
     return notes
 
 
@@ -82,15 +82,15 @@ def loadAudio(audio_file):
 
 def checkAudioWithSheet(audio, sheet):
     j_sheet = json.loads(sheet)
-    print(j_sheet)
-    for note in audio:
-        if note[0] == int(j_sheet[0]["Pitch"]):
-            print("Note is correct")
-        else:
-            print("Note is incorrect")
+    # print(j_sheet)
+    #for note in audio:
+        #if note[0] == int(j_sheet[0]["Pitch"]):
+            #print("Note is correct")
+        #else:
+            #print("Note is incorrect")
 
 
-#!---
+#!---0
 def createJsonFile(xml_list, name):
     result = []
     for xml in xml_list:
@@ -140,8 +140,8 @@ def main():
     if xml_list is not None and audio_file:
         print("Loading...")
         audio = loadAudio(audio_file[0])
-        print(audio)
-        print(xml_files[int(xml)])  #  xml_files[int(audio)]
+        # print(audio)
+        # print(xml_files[int(xml)])  #  xml_files[int(audio)]
         sheet = createJsonFile(xml_list, xml_files[int(xml)])
         print("JSON file created successfully!")
         checkAudioWithSheet(audio, sheet)

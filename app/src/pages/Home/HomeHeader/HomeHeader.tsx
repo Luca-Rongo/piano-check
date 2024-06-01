@@ -13,6 +13,7 @@ import { useCallback, useRef, useState } from "react";
 import zlib from "node:zlib";
 import fs from "fs";
 import unzipper from "unzipper";
+import JSZip from "jszip";
 export default function HomeHeader({ setXml }: { setXml: any }) {
   const [xmlFile, setXmlFile] = useState<any>("");
   const [AudioFile, setAudioFile] = useState<string | null>("");
@@ -21,20 +22,24 @@ export default function HomeHeader({ setXml }: { setXml: any }) {
 
   const handleXmlFileChange = (event: any) => {
     const file = event.target.files[0];
-    console.log(event.target.files);
     if (file) {
-      const fileContent = fs.createReadStream(`./${file.name}`);
-      // .pipe(unzipper.Extract({ path: "output/path" }));
+      const reader = new FileReader();
 
-      // .pipe(unzipper.Parse({ forceStream: true }));
-      // const reader = new FileReader();
-      // reader.onload = (e) => {
-      //   setXmlFile(e.target!.result);
-      //   const unzip =  zlib.createGunzip()
-      //   // setXml(e.target!.result);
-      //   // console.log(e.target!.result);
-      // };
-      // reader.readAsText(file);
+      const isMxl = file.name.endsWith(".mxl");
+      console.log(file)
+      reader.onload = (e) => {
+        const value = 
+          isMxl ?
+            String.fromCharCode.apply(null, new Uint8Array(reader.result as ArrayBuffer) as any) :
+            reader.result as string;
+        
+        setXml(value);
+      };
+      if (isMxl) {
+        reader.readAsArrayBuffer(file);
+      } else {
+        reader.readAsText(file);
+      }
       // setXml(file);
     }
     console.log("file", file);
@@ -72,7 +77,7 @@ export default function HomeHeader({ setXml }: { setXml: any }) {
                 onChange={handleXmlFileChange}
                 style={{ display: "none" }}
                 id="inputXml"
-                accept=".mxl"
+                accept=".xml"
                 ref={xmlFileElement}
               />
               Load Sheet

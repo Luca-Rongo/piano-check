@@ -29,7 +29,6 @@ export default function HomeBody({ xml }: { xml: any }) {
               </CardBody>
             </Card>
           </Center>
-          {/* <Image src="sheet.jpg" alt="HeadPhones" boxSize={200} margin={0} opacity={0.5}/> */}
         </Container>
       ) : (
         <MusicSheet xml={xml} />
@@ -39,32 +38,24 @@ export default function HomeBody({ xml }: { xml: any }) {
 }
 
 function MusicSheet({ xml }: { xml: any }) {
-  console.log(xml);
-  // const decompressedXml = fs.createReadStream(); 
-  const parser = parseString(xml, (err, result) => {
-    console.log(result);
-    console.log(err)
-  });
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
   const [xmlParsed, setXmlParsed] = useState<any>(null);
   useEffect(() => {
-    const musicXml = MusicXML.parse(xml);
-    console.log(musicXml);
+
     const osmd = new OpenSheetMusicDisplay(canvasRef.current!);
     osmd.setOptions({
       backend: "svg",
       drawTitle: true,
     });
     osmd.load(xml).then(() => {
+      osmd.Zoom = 0.5
       osmd.render();
     });
-    console.log(musicXml);
-    setXmlParsed(musicXml);
   });
 
   return (
     <Container>
-      <canvas ref={canvasRef}></canvas>
+      <div ref={canvasRef}></div>
     </Container>
   );
 }
